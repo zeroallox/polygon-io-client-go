@@ -58,7 +58,7 @@ params := models.ListTradesParams{Ticker: "AAPL"}.
 
 iter := c.Trades.ListTrades(context.Background(), params)
 for iter.Next() { // iter.Next() advances the iterator to the next value in the list
-    log.Print(iter.Trade()) // do something with the current value
+    log.Print(iter.Item()) // do something with the current value
 }
 if iter.Err() != nil {
     log.Fatal(err) // the loop will break if an error occurs while iterating
