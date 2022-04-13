@@ -443,13 +443,12 @@ func (cli *Client) sendAuthRequest() error {
     return cli.writeMessage(jData)
 }
 
-// writeMessage sends the message data to the websocket server.
-// A mutex is used to prevent concurrent writes.
+// writeMessage sends the message data to the websocket server. We do not
+// need to lock as the ws lib does this for us.
 func (cli *Client) writeMessage(data []byte) error {
-    cli.cond.L.Lock()
-    defer cli.cond.L.Unlock()
 
-    if cli.state != ST_Ready && cli.state != ST_Connected {
+    var state = cli.State()
+    if state != ST_Ready && state != ST_Connected {
         return ErrClientNotReady
     }
 
