@@ -5,9 +5,9 @@ import (
     "context"
     "errors"
     jsoniter "github.com/json-iterator/go"
-    "github.com/polygon-io/client-go/websocket/pwsmodels"
     log "github.com/sirupsen/logrus"
     "github.com/valyala/bytebufferpool"
+    "github.com/zeroallox/polygon-io-client-go/websocket/pwsmodels"
     "io"
     "nhooyr.io/websocket"
     "sync"
@@ -357,14 +357,25 @@ func (cli *Client) processMessageQueue(msgs []*bytebufferpool.ByteBuffer) {
     }
 }
 
+// statusConnected is sent when the ws connection is opened and protocol has settled
 const statusConnected = "connected"
+
+// statusAuthSuccess is sent when api key validation passes
 const statusAuthSuccess = "auth_success"
+
+// statusAuthFailed is sent when api key validation fails
 const statusAuthFailed = "auth_failed"
+
+// statusMaxConnections is sent when you have exceeded your per-cluster connection entitlements
+const statusMaxConnections = "max_connections"
+
+// statusSuccess is sent un successful subscription
 const statusSuccess = "success"
 
+// handleStatusMessage handles status / control messages sent by the server.
 func (cli *Client) handleStatusMessage(msg jsoniter.RawMessage) error {
 
-    var sm pwsmodels.Message
+    var sm pwsmodels.ControlMessage
 
     var err = json.Unmarshal(msg, &sm)
     if err != nil {
@@ -383,9 +394,10 @@ func (cli *Client) handleStatusMessage(msg jsoniter.RawMessage) error {
         _ = cli.closeWSConnection()
         return ErrAuthenticationFailed
     case statusSuccess:
-        // For sub confirmations.
-        // AFAIK there can never be a failure on subscribe.
-        // Server does not validate ticker symbols.
+        // TODO: Don't need to do anything?
+        return nil
+    case statusMaxConnections:
+        cli.reconnect()
         return nil
     default:
         cli.setState(ST_Error)

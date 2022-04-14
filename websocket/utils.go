@@ -2,25 +2,25 @@ package polygonws
 
 import (
     "fmt"
-    "github.com/polygon-io/client-go/websocket/pwsmodels"
+    "github.com/zeroallox/polygon-io-client-go/websocket/pwsmodels"
 )
 
-func makeAuthMessage(apiKey string) pwsmodels.Message {
-    return pwsmodels.Message{
+func makeAuthMessage(apiKey string) pwsmodels.ControlMessage {
+    return pwsmodels.ControlMessage{
         Action: "auth",
         Params: apiKey,
     }
 }
 
-func makeSubscribeMessage(topic Topic, tickers ...string) pwsmodels.Message {
-    return pwsmodels.Message{
+func makeSubscribeMessage(topic Topic, tickers ...string) pwsmodels.ControlMessage {
+    return pwsmodels.ControlMessage{
         Action: "subscribe",
         Params: generateSubListString(topic, tickers),
     }
 }
 
-func makeUnsubscribeMessage(topic Topic, tickers ...string) pwsmodels.Message {
-    return pwsmodels.Message{
+func makeUnsubscribeMessage(topic Topic, tickers ...string) pwsmodels.ControlMessage {
+    return pwsmodels.ControlMessage{
         Action: "subscribe",
         Params: generateSubListString(topic, tickers),
     }

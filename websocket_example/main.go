@@ -1,8 +1,8 @@
 package main
 
 import (
-    polygonws "github.com/polygon-io/client-go/websocket"
     log "github.com/sirupsen/logrus"
+    polygonws "github.com/zeroallox/polygon-io-client-go/websocket"
     "os"
     "sync"
 )
